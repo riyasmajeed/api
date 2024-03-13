@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:apitest/view/screens/Homepage.dart';
+import 'package:apitest/view/screens/home.dart';
 import 'package:flutter/material.dart';
 import 'package:apitest/model/model.dart';
 import 'package:apitest/controll/post.dart';
@@ -20,6 +22,7 @@ class _EditPageState extends State<EditPage> {
   late TextEditingController _positionController;
   late TextEditingController _salaryController;
   final PostService _postService = PostService(); // Instantiate PostService
+  
 
   @override
   void initState() {
@@ -44,37 +47,36 @@ class _EditPageState extends State<EditPage> {
       appBar: AppBar(
         title: Text("Edit Post"),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            TextField(
-              controller: _nameController,
-              decoration: InputDecoration(labelText: "Name"),
-            ),
-            TextField(
-              controller: _ageController,
-              decoration: InputDecoration(labelText: "Age"),
-            ),
-            TextField(
-              controller: _positionController,
-              decoration: InputDecoration(labelText: "Position"),
-            ),
-             TextField(
-              controller: _positionController,
-              decoration: InputDecoration(labelText: "Position"),
-            ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () async {
-                await _saveChanges(); // await to ensure changes are saved before moving forward
-                 onSave(post);
-                Navigator.pop(context);
-              },
-              child: Text("Save"),
-            ),
-          ],
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              TextField(
+                controller: _nameController,
+                decoration: InputDecoration(labelText: "carname"),
+              ),
+              TextField(
+                controller: _ageController,
+                decoration: InputDecoration(labelText: "modelname"),
+              ),
+              TextField(
+                controller: _positionController,
+                decoration: InputDecoration(labelText: "en:number"),
+              ),
+              
+              SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () async {
+                  await _saveChanges(); // await to ensure changes are saved before moving forward
+                   onSave(post);
+                 Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => Home(),), (route) => false);
+                },
+                child: Text("Save"),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -102,6 +104,7 @@ class _EditPageState extends State<EditPage> {
       details: widget.post.details, // Use the same list of details as before
     );
     widget.onSave(updatedPost);
+   
   } catch (e) {
     // Handle errors here
     print('Error updating post: $e');

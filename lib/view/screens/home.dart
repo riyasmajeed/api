@@ -1,3 +1,4 @@
+import 'package:apitest/view/screens/add.dart';
 import 'package:flutter/material.dart';
 import 'package:apitest/model/model.dart';
 import 'package:apitest/view/screens/editpage.dart';
@@ -16,6 +17,7 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(onPressed: (){Navigator.push(context, MaterialPageRoute(builder: (context) => Add(),));},child: Icon(Icons.add),),
       body: Container(
         height: double.infinity,
         width: double.infinity,
@@ -42,7 +44,12 @@ class _HomeState extends State<Home> {
                     return Center(
                       child: Text("Error: ${snapshot.error}"),
                     );
-                  } else if (snapshot.hasData) {
+                  }else if (snapshot.data!.isEmpty) {
+                    return Center(
+                      child: Text("no data"),
+                    );
+                  }
+                   else if (snapshot.hasData) {
                     return ListView.builder(
                       itemCount: snapshot.data!.length,
                       itemBuilder: (context, index) {
@@ -59,16 +66,18 @@ class _HomeState extends State<Home> {
                                 Text("Details:"),
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: post.details!.map((detail) {
-                                    return Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text("Engine Number: ${detail.engineNumber}"),
-                                        Text("Price: ${detail.price}"),
-                                        Text("Colors: ${detail.colors}"),
-                                      ],
-                                    );
-                                  }).toList(),
+                                  children: post.details != null
+                                    ? post.details!.map((detail) {
+                                        return Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text("Engine Number: ${detail.engineNumber}"),
+                                            Text("Price: ${detail.price}"),
+                                            Text("Colors: ${detail.colors}"),
+                                          ],
+                                        );
+                                      }).toList()
+                                    : [Text("No details available")],
                                 ),
                               ],
                             ),
@@ -88,44 +97,43 @@ class _HomeState extends State<Home> {
                                 icon: Icon(Icons.edit),
                               ),
                               IconButton(
-                                
-                          onPressed: () {
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return AlertDialog(
-                                  title: const Text("Confirm Deletion"),
-                                  content: const Text(
-                                      "Are you sure you want to delete this user?"),
-                                  actions: <Widget>[
-                                    TextButton(
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                      },
-                                      child: const Text("Cancel"),
-                                    ),
-                                    TextButton(
-                                      onPressed: () async {
-                                        try {
-                                           _postService.deletePost(post.sId!); // Call deletePost method
-                                  setState(() {
-                                    // Refresh the UI after deletion
-                                    snapshot.data!.remove(post);
-                                  });
-                                        } catch (e) {
-                                          print('Error deleting error: $e');
-                                        }
-                                     
-                                        Navigator.of(context).pop();
-                                      },
-                                      child: const Text("Delete"),
-                                    ),
-                                  ],
-                                );
-                              },
-                            );
-                          },
-                              
+                                onPressed: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        title: const Text("Confirm Deletion"),
+                                        content: const Text(
+                                            "Are you sure you want to delete this user?"),
+                                        actions: <Widget>[
+                                          TextButton(
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                            child: const Text("Cancel"),
+                                          ),
+                                          TextButton(
+                                            onPressed: () async {
+                                              try {
+                                                 _postService.deletePost(post.sId!); // Call deletePost method
+                                        setState(() {
+                                          // Refresh the UI after deletion
+                                         snapshot.data!.remove(post);
+
+                                        });
+                                       Navigator.push(context, MaterialPageRoute(builder: (context) => Home(),));
+                                              } catch (e) {
+                                                print('Error deleting error: $e');
+                                              }
+                                            
+                                            },
+                                            child: const Text("Delete"),
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  );
+                                },
                                 icon: Icon(Icons.delete),
                               )
                             ],

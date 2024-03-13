@@ -27,7 +27,7 @@ routes:
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         
-        body: const Add(),
+        body: const Home(),
       ),
     );
   }

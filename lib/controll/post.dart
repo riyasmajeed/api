@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:apitest/model/model.dart';
 
 class PostService {
-  final String baseUrl = 'https://crudcrud.com/api/0fccca93e662427490e8e7e24dfcb4bf';
+  final String baseUrl = 'https://crudcrud.com/api/f35c0002b17645208b15794e08a44aa0';
 
   Future<List<modelClass>> fetchData() async {
     final url = Uri.parse('$baseUrl/unicorns');
