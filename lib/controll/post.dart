@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:apitest/model/model.dart';
 
 class PostService {
-  final String baseUrl = 'https://crudcrud.com/api/f35c0002b17645208b15794e08a44aa0';
+  final String baseUrl = 'https://crudcrud.com/api/52e3d59af0ec4fb0bc6185fff2c7d15d';
 
   Future<List<modelClass>> fetchData() async {
     final url = Uri.parse('$baseUrl/unicorns');
@@ -41,7 +41,7 @@ class PostService {
         throw Exception('Failed to update post');
       }
     } catch (e) {
-      throw Exception('Error: $e');
+      print('Error: $e');
     }
   }
 
@@ -55,11 +55,12 @@ class PostService {
 
       if (response.statusCode == 200) {
         print('Post deleted successfully');
+        
       } else {
         throw Exception('Failed to delete post');
       }
     } catch (e) {
-      throw Exception('Error: $e');
+      print('Error: $e');
     }
   }
 }

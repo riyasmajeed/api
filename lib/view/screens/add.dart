@@ -1,7 +1,5 @@
 import 'dart:convert';
 
-import 'package:apitest/view/screens/Homepage.dart';
-import 'package:apitest/view/screens/home.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -46,7 +44,7 @@ class _AddState extends State<Add> {
     try {
       final response = await http.post(
         Uri.parse(
-            'https://crudcrud.com/api/f35c0002b17645208b15794e08a44aa0/unicorns'),
+            'https://crudcrud.com/api/52e3d59af0ec4fb0bc6185fff2c7d15d/unicorns'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
@@ -64,20 +62,27 @@ class _AddState extends State<Add> {
             content: Text('Employee added successfully.'),
           ),
         );
-        nameController.clear();
-        ageController.clear();
-        positionController.clear();
-        salaryController.clear();
-        enginenumberController.clear();
-        priceController.clear();
-        selectedColors.clear();
-        moreDetails.clear();
-        Navigator.push(context, MaterialPageRoute(builder: (context) => Home(),));
+        setState(() {
+          nameController.clear();
+          ageController.clear();
+          positionController.clear();
+          salaryController.clear();
+          enginenumberController.clear();
+          priceController.clear();
+          selectedColors.clear();
+          moreDetails.clear();
+        });
+        Navigator.pop(context); // Pop the Add screen
       } else {
         throw Exception(
             'Failed to add employee. Status code: ${response.statusCode}');
       }
     } catch (error) {
+      print('Failed to add employee: $error');
+      if (error is http.Response) {
+        print('Response status code: ${error.statusCode}');
+        print('Response body: ${error.body}');
+      }
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Failed to add employee: $error'),
@@ -96,19 +101,14 @@ class _AddState extends State<Add> {
         ),
         body: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.only(
-              left: 20,
-              right: 20,
-            ),
+            padding: const EdgeInsets.only(left: 20, right: 20),
             child: Column(
               children: [
                 Form(
                   child: SingleChildScrollView(
                     child: Column(
                       children: [
-                        SizedBox(
-                          height: 15,
-                        ),
+                        SizedBox(height: 15),
                         TextFormField(
                           controller: nameController,
                           validator: (value) {
@@ -118,57 +118,53 @@ class _AddState extends State<Add> {
                             return null;
                           },
                           decoration: InputDecoration(
-                              hintText: 'Enter car Name',
-                              border: OutlineInputBorder()),
+                            hintText: 'Enter car Name',
+                            border: OutlineInputBorder(),
+                          ),
                         ),
-                        SizedBox(
-                          height: 15,
-                        ),
+                        SizedBox(height: 15),
                         TextFormField(
                           controller: ageController,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return "Enter a name";
+                              return "Enter model";
                             }
                             return null;
                           },
                           decoration: InputDecoration(
-                              hintText: 'Enter model',
-                              border: OutlineInputBorder()),
+                            hintText: 'Enter model',
+                            border: OutlineInputBorder(),
+                          ),
                         ),
-                        SizedBox(
-                          height: 15,
-                        ),
+                        SizedBox(height: 15),
                         TextFormField(
                           controller: positionController,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return "Enter a name";
+                              return "Enter en:number";
                             }
                             return null;
                           },
                           decoration: InputDecoration(
-                              hintText: 'Enter en:number',
-                              border: OutlineInputBorder()),
+                            hintText: 'Enter en:number',
+                            border: OutlineInputBorder(),
+                          ),
                         ),
-                        SizedBox(
-                          height: 15,
-                        ),
+                        SizedBox(height: 15),
                         TextFormField(
                           controller: salaryController,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return "Enter a name";
+                              return "Enter price";
                             }
                             return null;
                           },
                           decoration: InputDecoration(
-                              hintText: 'Enter price',
-                              border: OutlineInputBorder()),
+                            hintText: 'Enter price',
+                            border: OutlineInputBorder(),
+                          ),
                         ),
-                        SizedBox(
-                          height: 15,
-                        ),
+                        SizedBox(height: 15),
                         GestureDetector(
                           onTap: () {
                             showDialog(
@@ -193,9 +189,7 @@ class _AddState extends State<Add> {
                                               hintText: 'Engine Number',
                                             ),
                                           ),
-                                          SizedBox(
-                                            height: 10,
-                                          ),
+                                          SizedBox(height: 10),
                                           TextFormField(
                                             controller: priceController,
                                             validator: (value) {
@@ -209,28 +203,30 @@ class _AddState extends State<Add> {
                                               hintText: 'Price',
                                             ),
                                           ),
-                                         DropdownButtonFormField(
-  items: carcolor
-      .map((e) => DropdownMenuItem(
-            child: Text(e),
-            value: e,
-          ))
-      .toList(),
-  decoration: InputDecoration(
-    border: OutlineInputBorder(
-        borderRadius:
-            BorderRadius.all(Radius.circular(28))),
-    filled: true,
-    hintText: "color",
-  ),
-  onChanged: (val) {
-    setState(() {
-      selectedColors.add(val.toString());
-     
-    });
-  },
-),
-
+                                          DropdownButtonFormField(
+                                            items: carcolor
+                                                .map((e) =>
+                                                    DropdownMenuItem(
+                                                      child: Text(e),
+                                                      value: e,
+                                                    ))
+                                                .toList(),
+                                            decoration: InputDecoration(
+                                              border: OutlineInputBorder(
+                                                  borderRadius:
+                                                      BorderRadius.all(
+                                                          Radius.circular(
+                                                              28))),
+                                              filled: true,
+                                              hintText: "color",
+                                            ),
+                                            onChanged: (val) {
+                                              setState(() {
+                                                selectedColors
+                                                    .add(val.toString());
+                                              });
+                                            },
+                                          ),
                                         ],
                                       ),
                                     ),
@@ -242,7 +238,7 @@ class _AddState extends State<Add> {
                                           moreDetails.add({
                                             'engineNumber': enginenumberController.text,
                                             'price': priceController.text,
-                                            'colors': selectedColors.toList(), 
+                                            'colors': selectedColors.toList(),
                                           });
                                         });
                                         enginenumberController.clear();
@@ -273,28 +269,31 @@ class _AddState extends State<Add> {
                             child: Center(child: Text("Add more details")),
                           ),
                         ),
-                        SizedBox(
-                          height: 15,
-                        ),
+                        SizedBox(height: 15),
                         ElevatedButton(
                           onPressed: () {
                             _addEmployee();
                           },
-                          child: Text("save"),
+                          child: Text("Save"),
                         ),
-                        SizedBox(
-                          width: 25,
-                        ),
+                        SizedBox(width: 25),
                         ElevatedButton(
                           onPressed: () {
-                            nameController.clear();
-                            ageController.clear();
-                            positionController.clear();
-                            salaryController.clear();
+                            setState(() {
+                              nameController.clear();
+                              ageController.clear();
+                              positionController.clear();
+                              salaryController.clear();
+                              enginenumberController.clear();
+                              priceController.clear();
+                              selectedColors.clear();
+                              moreDetails.clear();
+                            });
                           },
-                          child: Text("clear"),
+                          child: Text("Clear"),
                         )
                       ],
+
                     ),
                   ),
                 ),
@@ -305,8 +304,4 @@ class _AddState extends State<Add> {
       ),
     );
   }
-}
-
-void main() {
-  runApp(Add());
 }
